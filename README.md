@@ -1,123 +1,123 @@
-# Sauce Demo E2E Tests · Robot Framework
+# Testes E2E do Sauce Demo · Robot Framework
 
 [![Robot Framework tests](https://github.com/marcelalimacode/saucedemo-e2e-robot-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/marcelalimacode/saucedemo-e2e-robot-framework/actions/workflows/tests.yml)
 ![Robot Framework](https://img.shields.io/badge/Robot%20Framework-7-000000?logo=robotframework&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![Selenium](https://img.shields.io/badge/SeleniumLibrary-6-43B02A?logo=selenium&logoColor=white)
 
-[Português](README.pt-BR.md) · **English**
+**Português** · [English](README.en.md)
 
-## About
+## Sobre
 
-End-to-end UI tests for the main flows of an online store: login, cart, product sorting and checkout.
-The suite covers both the happy path and the cases where the application must block the user, and it runs automatically on every push with GitHub Actions.
+Testes automatizados de ponta a ponta (E2E) dos principais fluxos de uma loja online: login, carrinho, ordenação de produtos e checkout.
+A suíte cobre tanto o caminho feliz quanto os casos em que o sistema precisa barrar o usuário, e roda automaticamente a cada push no GitHub Actions.
 
-## Application under test
+## Sistema testado
 
-[Sauce Demo](https://www.saucedemo.com), a demo e-commerce site built by Sauce Labs for test automation practice.
+[Sauce Demo](https://www.saucedemo.com), uma loja de demonstração criada pela Sauce Labs para praticar automação de testes.
 
-| User | Purpose |
+| Usuário | Para que serve |
 | --- | --- |
-| `standard_user` | Regular customer, used in the positive flows |
-| `locked_out_user` | Blocked customer, used to check the lockout message |
+| `standard_user` | Cliente comum, usado nos fluxos positivos |
+| `locked_out_user` | Cliente bloqueado, usado para validar a mensagem de bloqueio |
 
-The password for both is `secret_sauce`. These public test users are listed on the site's own login page.
+A senha dos dois é `secret_sauce`. Esses usuários de teste são públicos e aparecem na própria tela de login do site.
 
-## Tech stack
+## Tecnologias
 
 - **Python 3.12**
-- **Robot Framework 7** with **SeleniumLibrary**
-- **Google Chrome** (headless in CI)
-- **GitHub Actions** for continuous integration
+- **Robot Framework 7** com **SeleniumLibrary**
+- **Google Chrome** (sem interface gráfica no CI)
+- **GitHub Actions** para integração contínua
 
-## Test scenarios
+## Cenários de teste
 
-| ID | Feature | Scenario | Type | Priority |
+| ID | Funcionalidade | Cenário | Tipo | Prioridade |
 | --- | --- | --- | --- | --- |
-| CT01 | Login | Login with valid user | Positive | High |
-| CT02 | Login | Login with wrong password | Negative | High |
-| CT03 | Login | Login with locked out user | Negative | High |
-| CT04 | Login | Login with empty fields | Negative | Medium |
-| CT05 | Login | Logout returns to the login page | Positive | Medium |
-| CT06 | Cart | Add a product to the cart | Positive | High |
-| CT07 | Cart | Remove a product from the cart | Positive | Medium |
-| CT08 | Products | Sort products by price from low to high | Positive | Low |
-| CT09 | Checkout | Complete a purchase | Positive | High |
-| CT10 | Checkout | Continue checkout without customer information | Negative | Medium |
+| CT01 | Login | Login com usuário válido | Positivo | Alta |
+| CT02 | Login | Login com senha incorreta | Negativo | Alta |
+| CT03 | Login | Login com usuário bloqueado | Negativo | Alta |
+| CT04 | Login | Login com campos vazios | Negativo | Média |
+| CT05 | Login | Logout volta para a tela de login | Positivo | Média |
+| CT06 | Carrinho | Adicionar um produto ao carrinho | Positivo | Alta |
+| CT07 | Carrinho | Remover um produto do carrinho | Positivo | Média |
+| CT08 | Produtos | Ordenar produtos por preço, do menor para o maior | Positivo | Baixa |
+| CT09 | Checkout | Finalizar uma compra completa | Positivo | Alta |
+| CT10 | Checkout | Continuar o checkout sem preencher os dados | Negativo | Média |
 
-## Project structure
+## Estrutura do projeto
 
 ```
 saucedemo-e2e-robot-framework/
-├── tests/                      # Test suites, one per feature
+├── tests/                      # Suítes de teste, uma por funcionalidade
 │   ├── login.robot             # CT01–CT05
 │   ├── cart.robot              # CT06–CT07
 │   ├── products.robot          # CT08
 │   └── checkout.robot          # CT09–CT10
 ├── resources/
-│   ├── base.robot              # Browser setup and teardown shared by all suites
+│   ├── base.robot              # Abrir e fechar o navegador, usado por todas as suítes
 │   ├── data/
-│   │   └── test_data.robot     # Users, customer data and expected messages
-│   └── pages/                  # Page Objects: locators and actions per screen
+│   │   └── test_data.robot     # Usuários, dados do cliente e mensagens esperadas
+│   └── pages/                  # Page Objects: localizadores e ações de cada tela
 │       ├── login_page.robot
 │       ├── products_page.robot
 │       ├── cart_page.robot
 │       └── checkout_page.robot
-├── .github/workflows/tests.yml # CI pipeline
+├── .github/workflows/tests.yml # Pipeline de CI
 └── requirements.txt
 ```
 
-## Design decisions
+## Decisões de projeto
 
-- **Page Object Model.** Each screen has its own resource file with its locators and actions, so a change in the UI is fixed in one place and the tests stay readable.
-- **Business-readable tests.** Test cases describe what the user does (`Login With`, `Add Product To Cart`, `Finish Checkout`), not how Selenium clicks.
-- **Data in one place.** Users, customer data and expected messages live in `test_data.robot`, so tests never hard-code values.
-- **Independent tests.** Every test opens a fresh browser and logs in on its own, so tests can run in any order.
-- **Tags.** `smoke` marks the critical path and `regression` marks the full set, together with feature tags (`login`, `cart`, `products`, `checkout`).
-- **Evidence on failure.** A screenshot is captured automatically whenever a test fails.
+- **Page Object Model.** Cada tela tem seu próprio arquivo com localizadores e ações. Se a tela mudar, a correção é feita em um lugar só e os testes continuam fáceis de ler.
+- **Testes em linguagem de negócio.** Os casos descrevem o que o usuário faz (`Login With`, `Add Product To Cart`, `Finish Checkout`), e não como o Selenium clica.
+- **Dados em um só lugar.** Usuários, dados do cliente e mensagens esperadas ficam em `test_data.robot`, sem valores fixos espalhados nos testes.
+- **Testes independentes.** Cada teste abre um navegador novo e faz o próprio login, então podem rodar em qualquer ordem.
+- **Tags.** `smoke` marca o caminho crítico e `regression` marca o conjunto completo, junto com tags por funcionalidade (`login`, `cart`, `products`, `checkout`).
+- **Evidência na falha.** Um print da tela é salvo automaticamente sempre que um teste falha.
 
-## How to run
+## Como rodar
 
-Requirements: Python 3.10+ and Google Chrome.
+Pré-requisitos: Python 3.10 ou superior e Google Chrome.
 
 ```bash
-# 1. Clone the repository
+# 1. Clonar o repositório
 git clone https://github.com/marcelalimacode/saucedemo-e2e-robot-framework.git
 cd saucedemo-e2e-robot-framework
 
-# 2. Install the dependencies
+# 2. Instalar as dependências
 pip install -r requirements.txt
 
-# 3. Run all tests (headless)
+# 3. Rodar todos os testes (sem abrir a janela do navegador)
 robot --outputdir results tests
 ```
 
-More ways to run:
+Outras formas de rodar:
 
 ```bash
-# Watch the browser while the tests run
+# Ver o navegador enquanto os testes rodam
 robot --outputdir results --variable BROWSER:chrome tests
 
-# Smoke tests only
+# Só os testes de smoke
 robot --outputdir results --include smoke tests
 
-# A single feature
+# Só uma funcionalidade
 robot --outputdir results tests/checkout.robot
 ```
 
-After the run, open `results/report.html` in your browser.
+Depois da execução, abra `results/report.html` no navegador.
 
 ## CI
 
-The workflow in `.github/workflows/tests.yml` runs on every push and pull request to `main`, and can also be started by hand from the **Actions** tab.
-It installs the dependencies, runs the whole suite in headless Chrome and saves the Robot report as a downloadable artifact named `robot-report`.
+O workflow em `.github/workflows/tests.yml` roda a cada push e pull request na branch `main`, e também pode ser iniciado manualmente pela aba **Actions**.
+Ele instala as dependências, roda a suíte inteira no Chrome sem interface e salva o relatório do Robot como um arquivo para download chamado `robot-report`.
 
-## Report
+## Relatório
 
-Every run on GitHub Actions saves the full Robot Framework report (`report.html` and `log.html`). Open the latest run in the **Actions** tab and download the `robot-report` artifact.
+Cada execução no GitHub Actions salva o relatório completo do Robot Framework (`report.html` e `log.html`). Abra a execução mais recente na aba **Actions** e baixe o arquivo `robot-report`.
 
-## Author
+## Autora
 
-**Marcela Lima** · QA Analyst
+**Marcela Lima** · Analista de QA
 
 [LinkedIn](https://www.linkedin.com/in/marcela-lima-qa) · [GitHub](https://github.com/marcelalimacode)
