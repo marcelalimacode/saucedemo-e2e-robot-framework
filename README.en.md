@@ -49,34 +49,37 @@ The password for both is `secret_sauce`. These public test users are listed on t
 
 ```
 saucedemo-e2e-robot-framework/
-├── tests/                      # Test suites, one per feature
-│   ├── login.robot             # CT01–CT05
-│   ├── cart.robot              # CT06–CT07
-│   ├── products.robot          # CT08
-│   └── checkout.robot          # CT09–CT10
-├── resources/
-│   ├── base.robot              # Browser setup and teardown shared by all suites
-│   ├── data/
-│   │   └── test_data.robot     # Users, customer data and expected messages
-│   └── pages/                  # Page Objects: locators and actions per screen
-│       ├── login_page.robot
-│       ├── products_page.robot
-│       ├── cart_page.robot
-│       └── checkout_page.robot
-├── .github/workflows/tests.yml # CI pipeline
+├── testes/                         # Test suites, one per feature
+│   ├── login.robot                 # CT01–CT05
+│   ├── carrinho.robot              # CT06–CT07
+│   ├── produtos.robot              # CT08
+│   └── checkout.robot              # CT09–CT10
+├── recursos/
+│   ├── base.robot                  # Browser setup and teardown shared by all suites
+│   ├── dados/
+│   │   └── dados_teste.robot       # Users, customer data and expected messages
+│   └── paginas/                    # Page Objects: elements and actions per screen
+│       ├── pagina_login.robot
+│       ├── pagina_produtos.robot
+│       ├── pagina_carrinho.robot
+│       └── pagina_checkout.robot
+├── .github/workflows/tests.yml     # CI pipeline
 └── requirements.txt
 ```
 
 ## Design decisions
 
 - **Page Object Model.** Each screen has its own resource file with its locators and actions, so a change in the UI is fixed in one place and the tests stay readable.
-- **Business-readable tests.** Test cases describe what the user does (`Login With`, `Add Product To Cart`, `Finish Checkout`), not how Selenium clicks.
-- **Data in one place.** Users, customer data and expected messages live in `test_data.robot`, so tests never hard-code values.
+- **Business-readable tests.** Test cases describe what the user does (`Fazer login com`, `Adicionar o produto ao carrinho`, `Finalizar a compra`), not how Selenium clicks.
+- **Data in one place.** Users, customer data and expected messages live in `dados_teste.robot`, so tests never hard-code values.
 - **Independent tests.** Every test opens a fresh browser and logs in on its own, so tests can run in any order.
-- **Tags.** `smoke` marks the critical path and `regression` marks the full set, together with feature tags (`login`, `cart`, `products`, `checkout`).
+- **Tags.** `smoke` marks the critical path and `regressao` marks the full set, together with feature tags (`login`, `carrinho`, `produtos`, `checkout`).
 - **Evidence on failure.** A screenshot is captured automatically whenever a test fails.
 
 ## How to run
+
+The project code (test names, keywords, variables and files) is written in Portuguese. Robot Framework and SeleniumLibrary keywords stay in English, as part of the tool.
+
 
 Requirements: Python 3.10+ and Google Chrome.
 
@@ -89,23 +92,26 @@ cd saucedemo-e2e-robot-framework
 pip install -r requirements.txt
 
 # 3. Run all tests (headless)
-robot --outputdir results tests
+robot --outputdir results testes
 ```
 
 More ways to run:
 
 ```bash
 # Watch the browser while the tests run
-robot --outputdir results --variable BROWSER:chrome tests
+robot --outputdir results --variable NAVEGADOR:chrome testes
 
 # Watch it slowly, with 1 second between each action
-robot --outputdir results --variable BROWSER:chrome --variable SPEED:1s tests
+robot --outputdir results --variable NAVEGADOR:chrome --variable VELOCIDADE:1s testes
 
 # Smoke tests only
-robot --outputdir results --include smoke tests
+robot --outputdir results --include smoke testes
 
 # A single feature
-robot --outputdir results tests/checkout.robot
+robot --outputdir results testes/checkout.robot
+
+# A single scenario
+robot --outputdir results --variable NAVEGADOR:chrome --test "CT01*" testes
 ```
 
 After the run, open `results/report.html` in your browser.

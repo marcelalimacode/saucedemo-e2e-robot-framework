@@ -49,34 +49,37 @@ A senha dos dois é `secret_sauce`. Esses usuários de teste são públicos e ap
 
 ```
 saucedemo-e2e-robot-framework/
-├── tests/                      # Suítes de teste, uma por funcionalidade
-│   ├── login.robot             # CT01–CT05
-│   ├── cart.robot              # CT06–CT07
-│   ├── products.robot          # CT08
-│   └── checkout.robot          # CT09–CT10
-├── resources/
-│   ├── base.robot              # Abrir e fechar o navegador, usado por todas as suítes
-│   ├── data/
-│   │   └── test_data.robot     # Usuários, dados do cliente e mensagens esperadas
-│   └── pages/                  # Page Objects: localizadores e ações de cada tela
-│       ├── login_page.robot
-│       ├── products_page.robot
-│       ├── cart_page.robot
-│       └── checkout_page.robot
-├── .github/workflows/tests.yml # Pipeline de CI
+├── testes/                         # Suítes de teste, uma por funcionalidade
+│   ├── login.robot                 # CT01–CT05
+│   ├── carrinho.robot              # CT06–CT07
+│   ├── produtos.robot              # CT08
+│   └── checkout.robot              # CT09–CT10
+├── recursos/
+│   ├── base.robot                  # Abrir e fechar o navegador, usado por todas as suítes
+│   ├── dados/
+│   │   └── dados_teste.robot       # Usuários, dados do cliente e mensagens esperadas
+│   └── paginas/                    # Page Objects: elementos e ações de cada tela
+│       ├── pagina_login.robot
+│       ├── pagina_produtos.robot
+│       ├── pagina_carrinho.robot
+│       └── pagina_checkout.robot
+├── .github/workflows/tests.yml     # Pipeline de CI
 └── requirements.txt
 ```
 
 ## Decisões de projeto
 
 - **Page Object Model.** Cada tela tem seu próprio arquivo com localizadores e ações. Se a tela mudar, a correção é feita em um lugar só e os testes continuam fáceis de ler.
-- **Testes em linguagem de negócio.** Os casos descrevem o que o usuário faz (`Login With`, `Add Product To Cart`, `Finish Checkout`), e não como o Selenium clica.
-- **Dados em um só lugar.** Usuários, dados do cliente e mensagens esperadas ficam em `test_data.robot`, sem valores fixos espalhados nos testes.
+- **Testes em linguagem de negócio.** Os casos descrevem o que o usuário faz (`Fazer login com`, `Adicionar o produto ao carrinho`, `Finalizar a compra`), e não como o Selenium clica.
+- **Dados em um só lugar.** Usuários, dados do cliente e mensagens esperadas ficam em `dados_teste.robot`, sem valores fixos espalhados nos testes.
 - **Testes independentes.** Cada teste abre um navegador novo e faz o próprio login, então podem rodar em qualquer ordem.
-- **Tags.** `smoke` marca o caminho crítico e `regression` marca o conjunto completo, junto com tags por funcionalidade (`login`, `cart`, `products`, `checkout`).
+- **Tags.** `smoke` marca o caminho crítico e `regressao` marca o conjunto completo, junto com tags por funcionalidade (`login`, `carrinho`, `produtos`, `checkout`).
 - **Evidência na falha.** Um print da tela é salvo automaticamente sempre que um teste falha.
 
 ## Como rodar
+
+O código do projeto (nomes dos testes, ações, variáveis e arquivos) está em português. Os comandos do Robot Framework e da SeleniumLibrary seguem em inglês, porque fazem parte da ferramenta.
+
 
 Pré-requisitos: Python 3.10 ou superior e Google Chrome.
 
@@ -89,23 +92,26 @@ cd saucedemo-e2e-robot-framework
 pip install -r requirements.txt
 
 # 3. Rodar todos os testes (sem abrir a janela do navegador)
-robot --outputdir results tests
+robot --outputdir results testes
 ```
 
 Outras formas de rodar:
 
 ```bash
 # Ver o navegador enquanto os testes rodam
-robot --outputdir results --variable BROWSER:chrome tests
+robot --outputdir results --variable NAVEGADOR:chrome testes
 
 # Ver devagar, com 1 segundo entre cada ação
-robot --outputdir results --variable BROWSER:chrome --variable SPEED:1s tests
+robot --outputdir results --variable NAVEGADOR:chrome --variable VELOCIDADE:1s testes
 
 # Só os testes de smoke
-robot --outputdir results --include smoke tests
+robot --outputdir results --include smoke testes
 
 # Só uma funcionalidade
-robot --outputdir results tests/checkout.robot
+robot --outputdir results testes/checkout.robot
+
+# Só um cenário
+robot --outputdir results --variable NAVEGADOR:chrome --test "CT01*" testes
 ```
 
 Depois da execução, abra `results/report.html` no navegador.
