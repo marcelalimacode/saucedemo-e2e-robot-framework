@@ -10,6 +10,8 @@ Resource         pages/checkout_page.robot
 *** Variables ***
 # Run with -v BROWSER:chrome to watch the browser locally
 ${BROWSER}    headlesschrome
+# Delay between each browser action. Run with -v SPEED:1s to watch the steps slowly
+${SPEED}      0s
 
 *** Keywords ***
 Open Sauce Demo
@@ -17,6 +19,7 @@ Open Sauce Demo
     ${options}=    Set Variable
     ...    add_argument("--incognito");add_argument("--window-size=1366,900");add_argument("--no-sandbox");add_argument("--disable-dev-shm-usage");add_experimental_option("prefs", {"credentials_enable_service": False, "profile.password_manager_enabled": False, "profile.password_manager_leak_detection": False})
     Open Browser    ${URL}    ${BROWSER}    options=${options}
+    Set Selenium Speed    ${SPEED}
     Wait Until Login Page Is Visible
 
 Close Sauce Demo

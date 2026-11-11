@@ -98,6 +98,9 @@ Outras formas de rodar:
 # Ver o navegador enquanto os testes rodam
 robot --outputdir results --variable BROWSER:chrome tests
 
+# Ver devagar, com 1 segundo entre cada ação
+robot --outputdir results --variable BROWSER:chrome --variable SPEED:1s tests
+
 # Só os testes de smoke
 robot --outputdir results --include smoke tests
 

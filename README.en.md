@@ -98,6 +98,9 @@ More ways to run:
 # Watch the browser while the tests run
 robot --outputdir results --variable BROWSER:chrome tests
 
+# Watch it slowly, with 1 second between each action
+robot --outputdir results --variable BROWSER:chrome --variable SPEED:1s tests
+
 # Smoke tests only
 robot --outputdir results --include smoke tests
 
