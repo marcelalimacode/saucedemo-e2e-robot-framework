@@ -5,6 +5,8 @@
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![Selenium](https://img.shields.io/badge/SeleniumLibrary-6-43B02A?logo=selenium&logoColor=white)
 
+**English** · [Português](README.pt-BR.md)
+
 ## About
 
 End-to-end UI tests for the main flows of an online store: login, cart, product sorting and checkout.
